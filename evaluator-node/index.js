@@ -1,65 +1,49 @@
-// index.js
 import express from 'express';
-import { config } from 'dotenv';
-import { mailQueue } from './queues/mailQueue.js';
-import { quizQueue } from './queues/quizQueue.js';
-import { testQueue } from './queues/testQueue.js';
-
-config();
+import cors from 'cors';
+import { corsConfig, db } from '../config/config.js';
+import mailRouter from './routes/mailRoutes.js';
+import MongoStore from 'connect-mongo'
+import session from 'express-session';
+import passport from 'passport';
+import morgan from 'morgan'
+import quizRouter from './routes/quizRoutes.js';
 const app = express();
+const PORT = 3001;
+
+
+db();
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.URI }),
+  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
+}));
+
 app.use(express.json());
+app.use(cors(corsConfig));
+app.use(morgan('dev'))
 
-app.get('/', (req, res) => {
-  res.send('Job Producer API running');
-});
 
-app.post('/jobs/mail', async (req, res) => {
-  const { to, subject, body } = req.body;
-  const job = await mailQueue.add('send-mail', { to, subject, body });
-  res.json({ status: 'queued', jobId: job.id });
-});
+// Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.post('/jobs/quiz', async (req, res) => {
-  const { userId, answers } = req.body;
-  const job = await quizQueue.add('evaluate-quiz', { userId, answers });
-  res.json({ status: 'queued', jobId: job.id });
-});
 
-app.post('/jobs/test', async (req, res) => {
-  const { testId, metadata } = req.body;
-  const job = await testQueue.add('process-test', { testId, metadata });
-  res.json({ status: 'queued', jobId: job.id });
-});
+app.get('/' , (req,res) => {res.json({message : "Evaluator working fine"})})
+app.use('/api/v4/mail', mailRouter);
 
-import { QueueEvents } from 'bullmq';
-import { connection } from './queues/connection.js';
 
-app.get('/jobs/status/:queue/:id', async (req, res) => {
-  const { queue, id } = req.params;
-  let queueInstance;
+app.use((req,res,next) => {
+   if(req.isAuthenticated()) next();
+   else res.status(401).json({message: "Unauthorised"})
+})
 
-  switch (queue) {
-    case 'mail':
-      queueInstance = mailQueue;
-      break;
-    case 'quiz':
-      queueInstance = quizQueue;
-      break;
-    case 'test':
-      queueInstance = testQueue;
-      break;
-    default:
-      return res.status(400).json({ error: 'Invalid queue' });
-  }
 
-  const job = await queueInstance.getJob(id);
-  if (!job) return res.status(404).json({ error: 'Job not found' });
+app.use('/api/v4/eval/quiz', quizRouter); 
+// app.use('/api/v4/eval/test' ,)
 
-  const state = await job.getState();
-  res.json({ jobId: id, state });
-});
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 API running on http://localhost:${PORT}`);
-});
+app.listen(PORT , () => {
+  console.log(`Server live at http://localhost:${PORT}`);
+})

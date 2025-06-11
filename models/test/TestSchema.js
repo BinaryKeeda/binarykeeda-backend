@@ -14,6 +14,7 @@ const TestSchema = Schema({
     name: { type: String, required: true },
     description: { type: String },
     duration:{type:Number},
+    category: {type:String , enum: ['Placement' , 'Gate'] , default: "Placement"}, 
     isAvailable:{type:Boolean,default:false}
 },{
     timestamps:true

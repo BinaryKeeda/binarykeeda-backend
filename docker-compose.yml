@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7.2
+    container_name: redis_server
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    volumes:
+      - ./redis-entrypoint.sh:/usr/local/bin/redis-entrypoint.sh
+    entrypoint: ["/bin/sh", "/usr/local/bin/redis-entrypoint.sh"]

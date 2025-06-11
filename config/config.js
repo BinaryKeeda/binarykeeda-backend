@@ -30,3 +30,16 @@ export const COOKIE_OPTIONS = {
     sameSite: 'none',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   };
+
+
+export const redisConnection = {
+  host: 'localhost',
+  port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  password: process.env.REDIS_PASSWORD
+};
+
+
+
+export const MAIL_JOB = 'sendMail';
+export const TEST_EVAL = 'testEval';
+export const QUIZ_EVAL = 'quizEval';

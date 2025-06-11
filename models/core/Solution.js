@@ -1,24 +1,38 @@
-import mongoose, { model, Schema } from 'mongoose'
+import mongoose, { Schema } from "mongoose";
 
-const SolutionSchema = Schema({
-    userId: {
-        type:String,
-        ref:'Users',
-        required:true
-    },
-    quizId: { 
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Quiz',
-        required:true
-    },
-    response:{},
-    marks:{type:Number , default:0},
-    ufmAttempts: {type:Number , default : 0},
-    score:Number,
-    isSubmitted:{type:Boolean, default:false},
-},{
-    timestamps:true
-})
+const SolutionSchema = new Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Users',
+    required: true
+  },
+  quizId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Quiz',
+    required: true
+  },
+  attemptNo: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  response: {
+    type: Map,
+    of: new Schema({
+      selected: [String], 
+      answer: String      
+    }, { _id: false }),
+    default: {}
+  },
+  ufmAttempts: { type: Number, default: 0 },
+  score: { type: Number, default: 0 },
+  isSubmitted: { type: Boolean, default: false }
+}, {
+  timestamps: true
+});
 
-const Solution = model('Solution' , SolutionSchema);
+// Performance index
+SolutionSchema.index({ quizId: 1, userId: 1, isSubmitted: 1 });
+
+const Solution = mongoose.model('Solution', SolutionSchema);
 export default Solution;

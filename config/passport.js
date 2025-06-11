@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import {Strategy as LocalStrategy} from 'passport-local';
-import User from "../models/User.js";
+import User from "../models/core/User.js";
 import bcrypt from 'bcryptjs';
 passport.use(
   new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
@@ -9,7 +9,7 @@ passport.use(
       const user = await User.findOne({ email });
       if (!user) return done(null, false, { message: "User not found" });
       if (!user.password) {
-        return done(null, false, { message: "This account was created using Google. Please sign in with Google." });
+        return done(null, false, { message: "This password is not yet set up for this account. Please sign in with Google." });
       }
      
       const isMatch = await bcrypt.compare(password, user.password);
