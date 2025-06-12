@@ -1,0 +1,38 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+      - name: Deploy to Primary Server (binarykeeda.com)
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@binarykeeda.com << 'EOF'
+            set -e
+            cd /home/ubuntu/code/binarykeeda-backend
+            git pull origin main || { echo 'Git pull failed' ; exit 1; }
+            pm2 restart 2 || { echo 'PM2 restart failed' ; exit 1; }
+          EOF
+
+      - name: Deploy to Evaluator Server (evaluator.binarykeeda.com)
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@evaluator.binarykeeda.com << 'EOF'
+            set -e
+            cd  /home/ubuntu/binarykeeda-backend
+            git pull origin main || { echo 'Git pull failed' ; exit 1; }
+            pm2 restart 1 || { echo 'PM2 restart failed' ; exit 1; }
+            pm2 restart 0 || { echo 'PM2 restart failed' ; exit 1; }
+          EOF
