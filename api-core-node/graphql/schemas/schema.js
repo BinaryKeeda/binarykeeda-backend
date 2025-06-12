@@ -14,6 +14,7 @@ export const schema = `#graphql
         negative:Int
         image:String
         options:[Options]
+        answer:String
     }
     type FunctionSignature {
         language: String!
@@ -98,6 +99,7 @@ export const schema = `#graphql
         isSubmitted: Boolean
         slug:String
         createdAt:String
+
     }
 
     type QuizPagination {

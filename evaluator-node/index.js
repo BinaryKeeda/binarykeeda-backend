@@ -8,11 +8,13 @@ import passport from 'passport';
 import morgan from 'morgan'
 import quizRouter from './routes/quizRoutes.js';
 import '../config/passport.js';
+import mongoose from 'mongoose';
 const app = express();
 const PORT = 3001;
 
-
-db();
+mongoose.connect(process.env.URI)
+.then(()=>console.log("Connected"))
+.catch((e) => console.log(e));
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -35,10 +37,10 @@ app.get('/' , (req,res) => {res.json({message : "Evaluator working fine"})})
 app.use('/api/v4/mail', mailRouter);
 
 
-app.use((req,res,next) => {
-   if(req.isAuthenticated()) next();
-   else res.status(401).json({message: "Unauthorised"})
-})
+// app.use((req,res,next) => {
+//    if(req.isAuthenticated()) next();
+//    else res.status(401).json({message: "Unauthorised"})
+// })
 
 
 app.use('/api/v4/eval/quiz', quizRouter); 

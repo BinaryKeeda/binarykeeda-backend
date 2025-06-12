@@ -3,12 +3,20 @@ import Solution from '../../../../models/core/Solution.js';
 export const getSolutions = async (_, args) => {
   try {
     const { userId, page = 1, search = '', limit = 10 } = args;
-
+    if(search) {
+      const solution = await Solution.findById(search)
+      .populate('quizId');
+      return {
+        status:true,
+        data:[solution],
+        page:0,
+        limit:0,
+        total:1
+      };
+    }
     if (!userId) {
       throw new Error('User ID is required');
     }
-
-    const searchRegex = new RegExp(search, 'i'); // case-insensitive regex
 
     const query = {
       userId,
@@ -23,7 +31,6 @@ export const getSolutions = async (_, args) => {
       .limit(limit).populate('quizId');
 
     const count = await Solution.countDocuments(query);
-    console.log(solutions)
     return {
       status: true,
       data: solutions,
