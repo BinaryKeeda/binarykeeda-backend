@@ -10,6 +10,7 @@ export const schema = `#graphql
         _id: ID!
         question:String
         marks:Int
+        category:String
         negative:Int
         image:String
         options:[Options]
@@ -115,6 +116,7 @@ export const schema = `#graphql
         totalItems: Int
         totalPages: Int
     }
+  
 
     type ResponseEntry {
         selected: [String]
@@ -124,7 +126,7 @@ export const schema = `#graphql
     type Solution {
         _id: ID
         userId: ID
-        quizId: ID
+        quizId: Quiz
         attemptNo: Int
         response: JSON       # Use a scalar to store Map-like data
         ufmAttempts: Int
@@ -133,6 +135,14 @@ export const schema = `#graphql
         createdAt:String
     }
 
+    type SolutionPagination {
+        status:Boolean
+        data:[Solution]
+        page:Int
+        limit:Int
+        totalItems:Int
+        totalPages:Int
+    }
 
     type UserSolution {
         solved:Boolean,
@@ -140,6 +150,51 @@ export const schema = `#graphql
         quiz:Quiz,
         message:String
     }
+
+    type CategoryStats {
+        average: Float
+        attempted: Int
+    }
+
+    type SolutionStats {
+        totalQuizSolutions: Int
+        totalTestSolutions: Int
+        aptitude: CategoryStats
+        miscellaneous: CategoryStats
+        core: CategoryStats
+        ease: CategoryStats
+        medium: CategoryStats
+        hard: CategoryStats
+    }
+
+    type Rank {
+        _id: ID
+        userId: ID
+        points: Int
+        solutions: SolutionStats
+        timestamp: String
+    }
+    type RankedUser {
+        userId: ID
+        name: String
+        university: String
+        points: Int
+        rank: Int
+    }
+
+    type RankSummary {
+        userId: ID
+        university: String
+        globalRank: Int
+        universityRank: Int
+        topGlobal: [RankedUser]
+        topUniversity: [RankedUser]
+        userRank:Rank
+    }
+
+        
+
+
     type Query {
         getQuizzes(
             page: Int = 1,
@@ -158,7 +213,16 @@ export const schema = `#graphql
         getUserSolution(
             slug:String!,
             userId:String!
-        ):UserSolution
+        ):UserSolution,
+        getRank(
+            userId: ID!, university: String!
+        ):RankSummary,
+        getSolutions(
+            page: Int = 1,
+            limit: Int = 10,
+            search: String,
+            userId: String!
+        ):SolutionPagination
     }
 
 `;

@@ -2,6 +2,7 @@ import { Router } from "express";
 import axios from 'axios'
 import { completeProfile, fetchUniversity } from "../controllers/profileControllers.js";
 import Users from "../../../../models/core/User.js";
+import Rank from "../../../../models/profile/Rank.js";
 const profileRouter = Router();
 
 profileRouter.get('/university/:name/', fetchUniversity);
@@ -12,6 +13,7 @@ profileRouter.put('/profile/complete' , async (req,res) => {
       if(user._id != id) {
         return res.status(401).json({ message: "You are not authorized to complete this profile" });
       }
+
       
       const newUser = await Users.findByIdAndUpdate(id, {
         $set: {
@@ -23,12 +25,17 @@ profileRouter.put('/profile/complete' , async (req,res) => {
           specialisation,
           program,
           semester,
-          university
+          university,
           },
       })
       if(newUser.googleId) {
         newUser.password = password;
       }
+      const userRank = new Rank({
+        userId: newUser._id,
+      })
+      await userRank.save()
+      newUser.rankId = userRank._id;
       newUser.profileCompleted = true;
       newUser.save();
       return res.json({user :newUser});

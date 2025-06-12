@@ -7,6 +7,7 @@ import session from 'express-session';
 import passport from 'passport';
 import morgan from 'morgan'
 import quizRouter from './routes/quizRoutes.js';
+import '../config/passport.js';
 const app = express();
 const PORT = 3001;
 

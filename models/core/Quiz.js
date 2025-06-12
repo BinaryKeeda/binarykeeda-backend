@@ -51,7 +51,7 @@ const QuizSchema = new Schema({
     required: true
   },
   title: { type: String, required: true },
-    slug: { type: String, unique: true },  
+  slug: { type: String},  
   duration: { type: Number, required: true, min: 1 }, // in minutes
   questions: {
     type: [QuestionSchema],
@@ -79,8 +79,7 @@ QuizSchema.pre('validate', function(next) {
   next();
 });
 
-QuizSchema.index({ slug: 1 }, { unique: true });
-QuizSchema.index({ category: 1 });
+QuizSchema.index({ slug: 1 });
 
 const Quiz = mongoose.model('Quiz', QuizSchema);
 export default Quiz;

@@ -2,6 +2,7 @@ import { Worker } from 'bullmq';
 // import os from 'os';
 import { redisConnection } from '../../config/config.js';
 import { mailSender } from './helpers/mailSender.js';
+import { evaluateQuiz } from './helpers/quizEvaluator.js';
 
 // const cpuCount = os.cpus().length;
 // const concurrency = Math.floor(cpuCount * 0.7); // 70% of cores
@@ -15,7 +16,7 @@ const worker = new Worker(
         break;
 
       case 'quizEval':
-        console.log('Evaluating quiz');
+        evaluateQuiz(job);
         break;
 
       case 'sendMail':mailSender(job);

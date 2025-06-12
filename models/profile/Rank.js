@@ -11,6 +11,34 @@ const RankSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  solutions:{
+    totalQuizSolutions: {type:Number , default:0},
+    totalTestSolutions: {type:Number , default:0},
+    aptitude:{
+        average:{type:Number, default:0},
+      attempted:{type:Number, default:0},
+    },
+    miscellaneous:{
+        average:{type:Number, default:0},
+        attempted:{type:Number, default:0},
+    },
+    core:{
+        average:{type:Number, default:0},
+        attempted:{type:Number, default:0},
+    },
+    ease:{
+         average:{type:Number, default:0},
+        attempted:{type:Number, default:0},
+    },
+    medium: {
+         average:{type:Number, default:0},
+        attempted:{type:Number, default:0},
+    },
+    hard :{
+         average:{type:Number, default:0},
+        attempted:{type:Number, default:0},
+    }
+  },
   timestamp: {
     type: Date,
     default: Date.now,

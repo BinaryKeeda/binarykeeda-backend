@@ -18,10 +18,6 @@ const SolutionSchema = new Schema({
   },
   response: {
     type: Map,
-    of: new Schema({
-      selected: [String], 
-      answer: String      
-    }, { _id: false }),
     default: {}
   },
   ufmAttempts: { type: Number, default: 0 },

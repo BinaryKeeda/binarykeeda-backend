@@ -13,7 +13,11 @@ const userSchema = new Schema(
         university:{type:String , default: ""},
         semester:{type:String,default:""},
         phone:{type:String, default:""},
-
+        rankId:{
+            type:String,
+            default:"",
+            ref:'Rank'
+        },
         profileCompleted: { type: Boolean, default: false },
         
         isVerified:{type:Boolean , default:false},
@@ -21,34 +25,7 @@ const userSchema = new Schema(
 
         googleId:String,
 
-        solutions:{
-            totalQuizSolutions: {type:Number , default:0},
-            totalTestSolutions: {type:Number , default:0},
-            aptitude:{
-                average:{type:Number, default:0},
-                attempted:{type:Number, default:0},
-            },
-            miscellaneous:{
-                average:{type:Number, default:0},
-                attempted:{type:Number, default:0},
-            },
-            core:{
-                average:{type:Number, default:0},
-                attempted:{type:Number, default:0},
-            },
-            ease:{
-                 average:{type:Number, default:0},
-                attempted:{type:Number, default:0},
-            },
-            medium: {
-                 average:{type:Number, default:0},
-                attempted:{type:Number, default:0},
-            },
-            hard :{
-                 average:{type:Number, default:0},
-                attempted:{type:Number, default:0},
-            }
-        }
+       
     },
     { timestamps: true }
 );

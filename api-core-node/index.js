@@ -69,10 +69,6 @@ const server = new ApolloServer({
   resolvers: resolver
 });
 await server.start();
-app.use((req,res,next) => {
-   if(req.isAuthenticated()) next();
-   else res.status(401).json({message: "Unauthorised"})
-})
 
 app.use('/graphql', expressMiddleware(server));
 
