@@ -7,7 +7,8 @@ import cors from 'cors';
 import { configDotenv } from 'dotenv';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-
+import { Server   } from 'socket.io'
+import { createServer } from 'http';
 import { corsConfig, db } from '../config/config.js';
 import { resolver } from './graphql/resolvers/resolvers.js';
 import { schema } from './graphql/schemas/schema.js';
@@ -36,12 +37,26 @@ const PORT = process.env.PORT || 4000;
    Middleware Configuration
 ========================== */
 
+// 0. Socket Io - Set up 
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: corsConfig
+});
+io.on(
+  'connection',
+  (socket) =>
+    console.log('Client connected to the server')
+  );
+  io.on('disconnect', () =>
+    console.log('Client disconnected from the server')
+  );
+
 // 1. CORS - apply before any routes
 app.use(cors(corsConfig));
 app.use(morgan('dev'))
 // 2. Body Parsers
 app.use(express.json()); // for JSON body
-app.use(express.urlencoded({ extended: true })); // for form data (optional)
+app.use(express.urlencoded({ extended: true })); // for form data 
 
 // 3. Session setup
 app.use(session({
@@ -51,7 +66,7 @@ app.use(session({
   store: MongoStore.create({ mongoUrl: process.env.URI }),
   cookie: {
     secure: false, // Set to true if using HTTPS
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
   }
 }));
 
@@ -97,6 +112,7 @@ app.get('/', (req, res) => {
 /* =======================
    Start Server
 ========================== */
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/graphql`);
 });
+

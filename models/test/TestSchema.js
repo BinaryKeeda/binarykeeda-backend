@@ -9,15 +9,22 @@ const SectionSchema = Schema({
     problemset : [{type:mongoose.Schema.Types.ObjectId , ref:'Problem'}]
 })
 
-const TestSchema = Schema({
+const TestSchema = new Schema({
     sections:[SectionSchema],
     name: { type: String, required: true },
     description: { type: String },
     duration:{type:Number},
     category: {type:String , enum: ['Placement' , 'Gate'] , default: "Placement"}, 
-    isAvailable:{type:Boolean,default:false}
+    isAvailable:{type:Boolean,default:false},
+    slug:{
+        type:String   }
 },{
     timestamps:true
 });
+
+TestSchema.index(
+    { slug: 1 },
+    { unique: true }
+);
 
 export const Test = model('Test',TestSchema);

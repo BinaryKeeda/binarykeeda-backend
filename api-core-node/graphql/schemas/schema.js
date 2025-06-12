@@ -1,5 +1,4 @@
 export const schema = `#graphql
-
     type Options {
         _id:ID
         text: String,
@@ -74,6 +73,7 @@ export const schema = `#graphql
     type Test {
         _id: ID!
         name: String!
+        slug:String
         description: String
         duration: Int
         category: String
@@ -193,9 +193,53 @@ export const schema = `#graphql
         topUniversity: [RankedUser]
         userRank:Rank
     }
+    # ================================
+    # Types
+    # ================================
 
-        
+    type QuizAnswer {
+        questionId: ID!
+        selectedOptionId: ID
+    }
 
+    type CodingAnswer {
+        id: String
+        userSolutionId: ID
+    }
+
+    type SectionResponse {
+        sectionId: ID!
+        sectionType: SectionType!
+        quizAnswers: [QuizAnswer]
+        codingAnswers: [CodingAnswer]
+        totalQuestions: Int
+        correctAnswers: Int
+    }
+
+    enum SectionType {
+        Quiz
+        Coding
+    }
+
+    type TestResponse {
+        _id: ID!
+        testId: ID!
+        userId: ID!
+        isSubmitted: Boolean!
+        response: [SectionResponse]
+        hasAgreed: Boolean!
+        startedAt: String
+        curr: Int
+        attempt: Int
+        createdAt: String
+        updatedAt: String
+    }
+
+    
+    type TestSolution {
+        test:Test
+        TestResponse:TestResponse
+    }
 
     type Query {
         getQuizzes(

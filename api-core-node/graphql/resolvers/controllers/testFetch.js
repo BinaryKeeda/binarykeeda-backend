@@ -59,6 +59,7 @@ export const getUserTest =  async (_, args) => {
         const attempts = attemptMap.get(test._id.toString()) || 0;
           return {
             _id: test._id,
+            slug:test.slug,
             name: test.name,
             description: test.description,
             duration: test.duration,
