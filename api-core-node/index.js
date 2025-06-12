@@ -91,7 +91,7 @@ app.use('/api/quiz', quizRouter);
 
 // Health check
 app.get('/', (req, res) => {
-  res.send('🚀 Server is up and running!');
+  res.send('Oops , you landed on the wrong page <a href="https://binarykeeda.com" > Go here</a>');
 });
 
 /* =======================

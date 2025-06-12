@@ -32,8 +32,10 @@ app.use(morgan('dev'))
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.get('/' , (req,res) => {res.json({message : "Evaluator working fine"})})
+// Health check
+app.get('/', (req, res) => {
+  res.send('Oops , you landed on the wrong page <a href="https://binarykeeda.com" > Go here</a>');
+});
 app.use('/api/v4/mail', mailRouter);
 
 
