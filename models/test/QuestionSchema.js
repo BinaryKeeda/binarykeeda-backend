@@ -1,31 +1,34 @@
 import { Schema } from 'mongoose';
 import mongoose from 'mongoose';
 
-export const QuestionSchema = new Schema({
-  question: {
-    type: String,
-    minlength: 5,
-    maxlength: 1000,
-  },
-  marks:{type:Number},
-  negative:{type:Number},
-  answerOptions: {
-    type: [
-      {
-        text:{type:String},
-      isCorrect:{type:Boolean,default:false}
-    }
-    ],
-    default: undefined,
-    validate: {
-      validator: function(value) {
-        return value && value.length === 4;
-      },
-      message: 'Answer options should be 4.'
-    }
-  }
-}, {
-  timestamps: true
+const OptionSchema = new Schema({
+  text: { type: String, required: false },
+  image: { type: String, required: false },
+  isCorrect: { type: Boolean, default: false }
 });
 
-export const Question = mongoose.model('Question', QuestionSchema);
+const QuestionSchema = new Schema({
+  question: { type: String, required: true },
+  image: { type: String, required: false, sparse: true },
+  marks: { type: Number, required: true, min: 0 },
+  negative: { type: Number, default: 0 },
+  category: {
+    type: String,
+    enum: ["MCQ", "MSQ", "Text"],
+    default: "MCQ"
+  },
+  answer: { type: String, required: function() { return this.category === "Text"; } },
+  options: {
+    type: [OptionSchema],
+    default: [],
+    validate: {
+      validator: function(arr) {
+        return this.category === 'Text' || (Array.isArray(arr) && arr.length >= 2);
+      },
+      message: 'Options must have at least 2 entries for MCQ/MSQ.'
+    }
+  }
+});
+
+export  {QuestionSchema};
+// export const Question = mongoose.model('Question', QuestionSchema);

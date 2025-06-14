@@ -19,6 +19,9 @@ import authRouter from './routes/auth.js';
 import profileRouter from './services/user/routes/profileRoutes.js';
 import quizRouter from './services/quiz/routes/quizRoutes.js';
 import morgan from 'morgan'
+import codeRouter from './routes/codeReview.js';
+import codeEvalRouter from './routes/codeExecute.js';
+import testRouter from './routes/testRoutes.js';
 configDotenv(); // Load .env variables
 
 // Connect to MongoDB
@@ -67,7 +70,8 @@ app.use(session({
   cookie: {
     secure: false, // Set to true if using HTTPS
     maxAge: 24 * 60 * 60 * 1000, // 1 day
-  }
+    sameSite: 'none'
+  },
 }));
 
 
@@ -103,7 +107,9 @@ app.use((req, res, next) => {
 // Protected Routes
 app.use('/api', profileRouter);
 app.use('/api/quiz', quizRouter);
-
+app.use('/api/code/', codeRouter);
+app.use('/api/judge0/',codeEvalRouter);
+app.use('/api/test' , testRouter);
 // Health check
 app.get('/', (req, res) => {
   res.send('Oops , you landed on the wrong page <a href="https://binarykeeda.com" > Go here</a>');

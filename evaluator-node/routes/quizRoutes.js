@@ -15,6 +15,7 @@ quizRouter.post('/submit', async (req, res) => {
     { _id: submissionId, isSubmitted: false }, 
     { $set: { isSubmitted: true } }
     );
+    
 
     try {
         const job = await mainQueue.add(

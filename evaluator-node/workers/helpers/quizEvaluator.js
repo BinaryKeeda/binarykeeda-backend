@@ -1,10 +1,9 @@
-import mongoose from 'mongoose';
 import Quiz from '../../../models/core/Quiz.js';
 import Solution from '../../../models/core/Solution.js';
 import Rank from '../../../models/profile/Rank.js';
 
 export const evaluateQuiz = async (job) => {
-  await mongoose.connect(process.env.URI);
+  // await mongoose.connect(process.env.URI);
 
   const { quizId, response, userId, submissionId } = job.data;
 
@@ -25,11 +24,11 @@ export const evaluateQuiz = async (job) => {
       if (Array.isArray(userAnswer)) {
         const isCorrect = userAnswer.length === correctOptions.length &&
           userAnswer.every(opt => correctOptions.includes(opt));
-        score += isCorrect ? marks : -negative;
+        score += isCorrect ? marks : +negative;
       }
     } else if (correctOptions.length === 1) {
       if (userAnswer === correctOptions[0]) score += marks;
-      else if (userAnswer) score -= negative;
+      else if (userAnswer) score += negative;
     } else {
       const correctText = question.answer?.trim().toLowerCase();
       if (typeof userAnswer === 'string' &&

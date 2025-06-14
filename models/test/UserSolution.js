@@ -2,7 +2,7 @@ import mongoose, { Schema, model } from "mongoose";
 
 const UserSolutionSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  testId: { type: Schema.Types.ObjectId, ref: 'Test', required: true }, // ADDED
+  responseId: { type: Schema.Types.ObjectId, ref: 'TestResponse', required: true }, // ADDED
   problemId: { type: Schema.Types.ObjectId, ref: 'Problem', required: true },
   language: { type: String, required: true },
   code: { type: String, required: true },

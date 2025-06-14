@@ -9,6 +9,7 @@ import morgan from 'morgan'
 import quizRouter from './routes/quizRoutes.js';
 import '../config/passport.js';
 import mongoose from 'mongoose';
+import testRouter from './routes/testRoutes.js';
 const app = express();
 const PORT = 3001;
 
@@ -20,7 +21,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.URI }),
-  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
+  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 , sameSite: 'none'},
 }));
 
 app.use(express.json());
@@ -46,7 +47,7 @@ app.use('/api/v4/mail', mailRouter);
 
 
 app.use('/api/v4/eval/quiz', quizRouter); 
-// app.use('/api/v4/eval/test' ,)
+app.use('/api/v4/eval/test' ,testRouter);
 
 
 app.listen(PORT , () => {

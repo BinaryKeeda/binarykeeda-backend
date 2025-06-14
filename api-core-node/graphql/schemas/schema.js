@@ -63,6 +63,7 @@ export const schema = `#graphql
     }
 
     type Section {
+        _id: ID!
         name: String!
         description: String
         sectionType: String
@@ -198,12 +199,12 @@ export const schema = `#graphql
     # ================================
 
     type QuizAnswer {
-        questionId: ID!
-        selectedOptionId: ID
+        id: ID!
+        selectedOption:[String]
     }
 
     type CodingAnswer {
-        id: String
+        problemId: String
         userSolutionId: ID
     }
 
@@ -238,7 +239,7 @@ export const schema = `#graphql
     
     type TestSolution {
         test:Test
-        TestResponse:TestResponse
+        testResponse:TestResponse
     }
 
     type Query {
@@ -268,7 +269,12 @@ export const schema = `#graphql
             limit: Int = 10,
             search: String,
             userId: String!
-        ):SolutionPagination
+        ):SolutionPagination,
+        getUserTestSolution(
+            slug:String!,
+            userId:String!,
+            isPractice:Boolean
+        ):TestSolution
     }
 
 `;
