@@ -9,7 +9,6 @@ testRouter.post('/start' , async (req,res) => {
     try{
         const {submissionId} = req.body;
       
-
         const updatedSubmission = await TestResponse.findByIdAndUpdate(
             submissionId,
             {
@@ -20,9 +19,10 @@ testRouter.post('/start' , async (req,res) => {
             },
             { new: true }
         );
-        // await updatedSubmission.save();
-        res.status(200).json({message : "Test started successfully"});
+        await updatedSubmission.save();
+        res.status(200).json({message : "Test started successfully" , startedAt:updatedSubmission.startedAt.getTime()});
     }catch (error) {
+        console.log(error);
         res.status(400).json({message : "Failed to start test"});
     }
 })
