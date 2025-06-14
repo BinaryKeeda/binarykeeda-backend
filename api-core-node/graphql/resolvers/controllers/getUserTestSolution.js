@@ -31,7 +31,7 @@ export const getUserTestSolution = async (_, args) => {
             selectedOption: Array.isArray(answerText) ? answerText : [answerText]
         }));
 
-        console.log(codingMap)
+        // console.log(codingMap)
         const codingAnswers = Object.entries(codingMap).map(([problemId, userSolutionId]) => ({
             problemId: problemId,
             // userSolutionId

@@ -8,11 +8,11 @@ const testRouter = Router();
 testRouter.post('/submit/section' , async (req,res) => {
     try {
 
-        const { sectionId, submissionId, sectionLength , sectionType, quizAnswers, codingAnswers } = req.body;
+        const { sectionId, submissionId, sectionLength , sectionType,autoSubmit, quizAnswers, codingAnswers } = req.body;
         const submission  = await TestResponse.findById(submissionId);
         // const test = await Test.findById(testId);
         submission.curr += 1;
-        if (submission.curr >= sectionLength) {
+        if (submission.curr >= sectionLength || autoSubmit) {
             submission.isSubmitted = true;
         }  
         submission.save();
@@ -28,7 +28,7 @@ testRouter.post('/submit/section' , async (req,res) => {
             timeout: 10000
         })
 
-        return res.json({message:"Section submitted successfully"});
+        return res.json({message:"Section submitted successfully" ,isSubmitted:submission.isSubmitted});
     } catch (error) {
         res.json({message: "Error while adding job"})
     }
