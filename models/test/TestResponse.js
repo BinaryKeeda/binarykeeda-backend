@@ -31,6 +31,7 @@ const TestResponseSchema = new Schema({
   response: [SectionResponseSchema],
   hasAgreed:{type:Boolean , default :false}, 
   startedAt: {type:Date , default : null},
+  ufm:{type:Number, default:0},
   curr:{type:Number, default:0},
   attempt:Number
   

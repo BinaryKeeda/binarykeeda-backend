@@ -141,11 +141,9 @@ codeEvalRouter.post('/submit', async (req, res) => {
         totalQuestions: -1,
         correctAnswers: -1
       });
-      console.log("N")
     } else {
       // Update existing section
       const currSection = testSubmission.response[testSubmission.curr];
-      console.log(currSection);
       if (!currSection.codingAnswers || currSection.codingAnswers.length === 0) {
         currSection.codingAnswers = [answerData]; // initialize with first answer
       } else {

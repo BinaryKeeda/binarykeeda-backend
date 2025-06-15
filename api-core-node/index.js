@@ -22,6 +22,7 @@ import morgan from 'morgan'
 import codeRouter from './routes/codeReview.js';
 import codeEvalRouter from './routes/codeExecute.js';
 import testRouter from './routes/testRoutes.js';
+import { TestResponse } from '../models/test/TestResponse.js';
 configDotenv(); // Load .env variables
 
 // Connect to MongoDB
@@ -115,6 +116,19 @@ app.get('/', (req, res) => {
   res.send('Oops , you landed on the wrong page <a href="https://binarykeeda.com" > Go here</a>');
 });
 
+
+app.post('/ufm' ,async (req,res) => {
+  const {ufm,submissionId} = req.body;
+  try{
+    const res = await TestResponse.findById(submissionId);
+    res.ufm = ufm;
+    await res.save();
+    res.send("");
+
+  }catch(e) {
+    res.status(400).send("")
+  }
+})
 /* =======================
    Start Server
 ========================== */
